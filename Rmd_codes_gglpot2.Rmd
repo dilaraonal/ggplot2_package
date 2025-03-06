@@ -1,0 +1,173 @@
+---
+title: "BSB632_HW2"
+author: "Dilara ONAL"
+date: "2024-03-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# BSB632
+## Homework II
+In 1994, Diggle et al. published data on milk protein content of cows with different feeding strategies between the 1st and 19th weeks after calving. There are three different feeding strategies in the data: barley, barley and lupine, lupin. The amount of protein in each cow was measured every week and added to the data. Below is a summary and some of the data for informational purposes.  
+
+```{r, echo = FALSE}  
+milk_data <- read.table("E:/Downloads/milk.csv",
+                          header = TRUE,      
+                          sep = ","  )
+
+milk_data <- milk_data[, !(names(milk_data) %in% c("rownames"))]
+head(milk_data)
+summary(milk_data)
+```
+
+
+**A- ** Two box plots with and without data points were created to show protein measurements for each feeding strategy.
+
+```{r, echo = FALSE, message=FALSE}
+library(ggplot2)
+```
+
+```{r, echo = FALSE, fig.cap="**Figure 1** Boxplot without data points added. The graph shows the protein measurements obtained for the feeding strategies", fig.align="center" }
+ggplot(data = milk_data,
+       aes(x = Diet,
+           y = protein)) + 
+  geom_boxplot() + 
+  labs(title = "Protein Measurements According to Feeding Strategy") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+When the graph is examined, it is observed that the protein measurement averages are highest in the barley nutrition strategy and lowest in the lupin strategy. In the barley and lupin feeding application, the outlier points are at farther points than the other groups, and when the lupin data are examined, it is observed that there are more outlier points in the other groups.
+
+```{r, echo = FALSE, fig.cap="**Figure 2** Boxplot with data points added. The graph shows the protein measurements obtained for the feeding strategies.", fig.align="center" }
+ggplot(data = milk_data,
+       aes(x = Diet, 
+           y = protein)) + 
+  geom_boxplot(alpha = 0) +
+  geom_jitter(alpha = 0.3, 
+              color = "blue") + 
+  labs(title = "Protein Measurements According to Feeding Strategy") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+When the graph is examined with data points, the data distribution can be analyzed better. How much data is close to the average values can be observed thanks to the graph. As seen in the graph, it can be said that the data in the barley group is better than other groups in terms of consistency in distribution. However, when the graph is examined, it is seen that the highest protein measurement is from the barley and lupins group, which is higher than 4.5.
+
+
+**B- ** The data was filtered to retain only week 1 data. For the new filtered data set. A boxplot was created. With this graph, it was observed how the protein measurements in the first week were distributed according to nutrition groups.
+```{r, echo = FALSE, message=FALSE}
+library(dplyr)
+```
+
+```{r, echo = FALSE,  fig.cap="**Figure 3** Protein measurement values according to feeding groups of the 1st week of calving of cows.", fig.align="center" }
+first_week <- milk_data %>%
+  filter(Time == 1)
+head(first_week)
+
+ggplot(data = first_week,
+       aes(x = Diet,
+           y = protein)) + 
+  geom_boxplot(alpha = 0) +
+  geom_jitter(alpha = 0.3, 
+              color = "blue")+
+  labs(title = "Protein Measurements According to Feeding Strategy For 1th Weeks") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+Looking at the averages of the groups in the graph, the barley and lupins groups have higher averages than the other two groups. The averages of barley and lupine's separate diet programs are quite close to each other. When it included 19 weeks, barley alone had a higher average protein. When I use only the first week as a reference, the protein average of the program in which barley and lupine were given together was higher. Outlier, a very low protein measured data is observed in the lupins group. The highest protein measurement is also in the barley and lupins group.
+
+
+
+**C- ** A new data set was created by selecting cows B01, B02, BL01, BL02, L01, L02 among the cows in first 18 weeks. A graph was created to analyze how protein measurements changed over time for selected cows.
+
+```{r, echo = FALSE,  fig.cap="**Figure 4** Change in protein measurements of cows B01, B02, BL01, BL02, L01, L02 over time.", fig.align="center"  }
+cows <- milk_data %>%
+  filter(Time <= 18, 
+         Cow %in% c("B01" ,"B02", "BL01", "BL02", "L01", "L02"))
+
+
+ggplot(data = cows) + 
+  aes(x = Time, y = protein, color = Cow) + 
+  geom_line() + 
+  geom_point() + 
+  labs(title = "Protein Measurements According to Selected Cows") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+The graph shows a line graph of the protein measurements of selected cows. Having the information of the 6 selected cows in the same graph may make it difficult to read, but such graphs may be desired for comparison with each other.
+
+
+**D- ** The graph created in option C was drawn as separate graphs and the results were analyzed.
+```{r, echo = FALSE, fig.cap="**Figure 5** Graphs showing the changes over time in protein measurements prepared for each cow B01, B02, BL01, BL02, L01, L02.", fig.align="center" }
+ggplot(data = cows) + 
+  aes(x = Time, y = protein, color = Cow) +
+  geom_line() + 
+  geom_point() + facet_wrap(~Cow) + 
+  labs(title = "Protein Measurements Plots According to Selected Cows") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+When the graphs in C and D are examined, it can be said that there is a decrease in protein measurements in the first weeks for each selected cow. Although cow L02 started with the highest protein levels, it experienced the largest decrease in the first weeks. For B02 and BL01 cows, which start with low protein levels compared to other cows; The B02 cow generally continued without much fluctuation in the protein level and ended at a low level again, while the BL01 cow experienced a high decrease after the 5th week and then increased but still did not stabilize at a very high protein level. No significant difference was observed in the initial and final protein levels of BL02 and L01 cows. Both types of cows have a protein level that has experienced quite a lot of rises and falls. Cow B01 started with an average protein level and showed a steady increase. At the end of the 18th week, it not only had the highest protein level, but also became the cow whose protein level increased most consistently over time.
+
+
+**E- ** The average of how many cows were taken for each week in the data and the protein levels for each week were taken and a data set was created. This data set is shown below. A graph was drawn to observe the change in the average protein level over time.
+
+```{r, echo = FALSE,  fig.cap="**Figure 6** Graphs showing the changes over time in protein measurements prepared for each cow B01, B02, BL01, BL02, L01, L02.", fig.align="center"}
+num_cows_mean_protein <- milk_data %>%
+  group_by(Time) %>%
+  summarise(Number_cows = n_distinct(Cow),
+            Protein_mean = mean(protein, na.rm = TRUE))
+print(num_cows_mean_protein)
+
+ggplot(data = num_cows_mean_protein)+
+  aes(x = Time, y = Protein_mean) +
+  geom_line() +
+  geom_point() +
+  labs(x = "Weeks", y = "Mean protein", title = "Average Protein Measurements Distribution") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+When the graph is examined, it is observed that the protein average starts quite high at the beginning and decreases over time. There was a small increase towards the last weeks, but there was a decrease again in the last week.
+
+
+**G- ** The number of cows in each feeding group was counted for each week and the protein levels of each feeding group were averaged. Below is a part of the new dataset obtained. A distribution chart of protein content over time was created and examined according to feeding group.
+
+```{r, echo=FALSE, message=FALSE, fig.cap="**Figure 7** Scatter plot of average protein level versus number of weeks by feeding strategy.", fig.align="center"}
+num_cows_Diet <- milk_data %>%
+  group_by(Time,Diet) %>%
+  summarise(Number_cows = n_distinct(Cow),
+            Protein_mean = mean(protein, na.rm = TRUE))
+head(num_cows_Diet)
+
+ggplot(data = num_cows_Diet) + 
+  aes(x = Time, y = Protein_mean, color = Diet) +
+  geom_line() +
+  geom_point() +
+  labs(x = "Weeks", y = "Mean protein", title = "Protein Averages by Feeding Strategy") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+When the graph is examined, it is seen that the average protein levels of the cows in the barley feeding program are higher than the other groups. It is observed that the protein levels in the Lupines group have the lowest protein levels compared to the other groups. In the graph, it is observed that three separate groups are sufficiently separated from each other. When the average protein levels are ranked according to time, from high to low, they are only barley, barley and lupins, only lupins, and this ranking did not show a significant change over time. This sequence continued from the beginning to the last week, so it can be thought that it is more correct to apply the barley diet in the feeding strategy for cows.
+
+
+**H- ** The data is in tidy format. By modifying this data set, a new data set was created with separate columns reporting protein content for each week and a different cow in each row. Below is the new data set.
+
+The reason why the data is already in an tidy format means that there is a feature in each column. Each variable has its own column and each observation has its own row. In the newly created new dataset a column was created for each week, each row representing only one cow. A new structure was created by spreading the data into columns.
+
+```{r, echo=FALSE, message=FALSE}
+library(tidyr)
+```
+
+
+```{r, echo=FALSE}
+
+wider_form <- pivot_wider(data = milk_data,
+                     names_from = "Time",
+                     values_from = "protein")
+
+print(wider_form)
+```
