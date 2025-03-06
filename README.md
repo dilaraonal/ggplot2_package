@@ -19,3 +19,5 @@ Diggle et al. (1994) published data on the milk protein content of 79 cows. The 
 
 **(h)** This data is in tidy format. Why? Generate a dataframe where there are separate columns for each week reporting the protein content, and each row shows a different cow.
 
+## R Markdown (Rmd)
+R Markdown (.Rmd) is a file format that combines R code, text, and visualizations into a single, dynamic document. It allows users to write reports, perform data analysis, and generate documents in various formats like HTML, PDF, and Word.
